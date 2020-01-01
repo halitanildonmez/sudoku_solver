@@ -10,8 +10,8 @@ from PyQt5.QtCore import Qt, QRectF
 class App(QDialog):
     def __init__(self):
         super().__init__()
-        self.horizontalGroupBox = QGroupBox("Grid")
-        self.title = 'PyQt5 layout - pythonspot.com'
+        self.horizontalGroupBox = QGroupBox("")
+        self.title = 'Sudoku Board'
         self.left = 10
         self.top = 10
         self.width = 320
@@ -36,11 +36,16 @@ class App(QDialog):
         counter = 0
         for i in range(9):
             for j in range(9):
+                style_val = "background-color: white;"
                 b = QLabel()
                 b.setAlignment(Qt.AlignCenter)
                 b.setText(str(counter))
                 b.setFixedSize(80, 60)
-                b.setStyleSheet("border: 1px solid red; background-color: white;")
+                if j % 3 == 0 and j != 0:
+                    style_val += "border-left: 3px solid black;"
+                if i == 3 or i == 6:
+                    style_val += "border-top: 3px solid black;"
+                b.setStyleSheet(style_val)
                 layout.addWidget(b, i, j)
                 counter += 1
 
