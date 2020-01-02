@@ -57,7 +57,7 @@ class App(QDialog):
         self.top = 10
         self.width = 320
         self.height = 100
-        QTimer.singleShot(5000, self.solveBoard)
+        QTimer.singleShot(500, self.solveBoard)
 
     def initUI(self):
         self.setWindowTitle(self.title)
@@ -72,32 +72,45 @@ class App(QDialog):
         self.initUI()
 
     def solveBoard(self):
+        # this happens when the timer starts initially before UI and not sure why this happens
+        # for now add this check
         if len(self.labels) == 0:
             return
+        # find the empty row and column
         e_r, e_c = find_empty(self.board)
+        # we can stop since we have no more empty cells
         if e_r == -1 and e_c == -1:
             return True
+        # convert 2d coordinate to 1d for label indexing
+        label_index = 9 * e_r + e_c
+        # get the row and column empty cell is in
         empty_row = self.board[e_r]
         empty_col = [sub[e_c] for sub in self.board]
-
+        # get the index of the 3x3 grid of the empty cell
         grid_row_index = int(e_r / 3) * 3
         grid_col_index = int(e_c / 3)
-
+        # get the grid array
         g_c = [sub[grid_col_index * 3:grid_col_index * 3 + 3] for sub in self.board[grid_row_index:grid_row_index + 3]]
+        # start trying the numbers for an empty cell
         for cur_row_index in range(1, 10):
-            time.sleep(1)
-            self.labels[9 * e_r + e_c].setText(str(cur_row_index))
-            self.labels[9 * e_r + e_c].setStyleSheet("background-color: red;")
+            # to give some animation feeling wait for GUI
+            time.sleep(0.3)
+            self.labels[label_index].setText(str(cur_row_index))
+            # trigger a repaint to update the GUI
             self.repaint()
+            # value should be unique in the row, column and in the cell
             if cur_row_index not in empty_row and \
                     cur_row_index not in empty_col and \
                     is_in_grid(g_c, cur_row_index) is False:
+                # add the value to the board
                 self.board[e_r][e_c] = cur_row_index
+                # if the value solves the board return
                 if self.solveBoard():
                     return True
+        # we should backtrack since no value is found, set the value to 0 again for empty
         self.board[e_r][e_c] = 0
-        self.labels[9 * e_r + e_c].setText("")
-        self.labels[9 * e_r + e_c].setStyleSheet("background-color: white;")
+        # set the text of the label to empty
+        self.labels[label_index].setText("")
         return False
 
     def create_grid_layout(self):
@@ -119,6 +132,7 @@ class App(QDialog):
                     label.setText(str(cur))
                     label.set_value(cur)
                 else:
+                    style_val += "color: red;"
                     label.set_value(0)
                 label.setFixedSize(80, 60)
                 if j % 3 == 0 and j != 0:
