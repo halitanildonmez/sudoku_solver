@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QApplication, QDialog, QVBoxLayout, QGroupBox, \
     QGridLayout, QLabel
 import sys
 import time
-from PyQt5.QtCore import Qt, QTime, QTimer
+from PyQt5.QtCore import Qt, QTimer
 
 
 class SudokuLabel(QLabel):
