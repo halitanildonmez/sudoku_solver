@@ -146,10 +146,6 @@ class App(QDialog):
 
 
 if __name__ == '__main__':
-    li = [1, 2, 4]
-    b = li[1]
-    b = 55
-    print(li)
     app = QApplication(sys.argv)
     ex = App()
     ex.show()
